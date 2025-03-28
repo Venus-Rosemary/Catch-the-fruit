@@ -16,6 +16,7 @@ public class ScoreController : Singleton<ScoreController>
     public TMP_Text PTSText;
     public TMP_Text ATSText;
     public float currentTime = 60f;
+    public UIController uiC;
     
     [Header("分值匹配挑战")]
     public GameObject rewardPrefab; // 奖励预制体
@@ -40,11 +41,18 @@ public class ScoreController : Singleton<ScoreController>
 
     void Update()
     {
-        KeepTime();
+        if (uiC.GameUI.activeSelf)
+        {
+            KeepTime();
+        }
+        if (currentTime<=0)
+        {
+            uiC.ActiveEndUI();
+            currentTime = 60f;
+        }
         if (playerTotalPoints < aiTotalPoints)
         {
-            FGCon.InitializationSettings();
-            OtherInitializationSettings();
+            uiC.ActiveEndUI();
         }
         
         // 更新挑战计时器
@@ -53,7 +61,7 @@ public class ScoreController : Singleton<ScoreController>
             UpdateChallengeTimer();
         }
         PTSText.text = "玩家总分: " + playerTotalPoints.ToString();
-        ATSText.text = "玩家总分: " + aiTotalPoints.ToString();
+        ATSText.text = "AI总分: " + aiTotalPoints.ToString();
     }
 
     #region 生成能量球挑战
@@ -179,28 +187,28 @@ public class ScoreController : Singleton<ScoreController>
     {
         FGCon.isNormalPass = false;
         FGCon.isHardPass = false;
-        PTSText.gameObject.SetActive(true);
-        ATSText.gameObject.SetActive(false);
         currentTime = 90f;
         OverallStartGame();
+        PTSText.gameObject.SetActive(true);
+        ATSText.gameObject.SetActive(false);
     }
     public void StartNormalGame()//普通开始
     {
         FGCon.isNormalPass = true;
         FGCon.isHardPass = false;
-        PTSText.gameObject.SetActive(true);
-        ATSText.gameObject.SetActive(true);
         currentTime = 150f;
         OverallStartGame();
+        PTSText.gameObject.SetActive(true);
+        ATSText.gameObject.SetActive(true);
     }
     public void StartHardGame()//困难开始
     {
         FGCon.isNormalPass = true;
         FGCon.isHardPass = true;
-        PTSText.gameObject.SetActive(true);
-        ATSText.gameObject.SetActive(true);
         currentTime = 210f;
         OverallStartGame();
+        PTSText.gameObject.SetActive(true);
+        ATSText.gameObject.SetActive(true);
     }
 
     public void EndGame()

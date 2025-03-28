@@ -9,7 +9,8 @@ public class PlayerController : MonoBehaviour
     public float circleRadius = 5f;
     public GameObject triggerObject;
     public GameObject VFXSlowDown;
-    public GameObject PlayerHitVFS;
+    public GameObject PlayerHitVFX;
+    public GameObject triggerVFX;
     private bool isDisabled = false;//处于被石头减速状态
     private float disableTimer = 0f;
     private Vector3 originalScale; // 保存原始缩放
@@ -38,7 +39,7 @@ public class PlayerController : MonoBehaviour
             if (disableTimer <= 0) { 
                 isDisabled = false;
                 VFXSlowDown.SetActive(false);
-                PlayerHitVFS.SetActive(false);
+                PlayerHitVFX.SetActive(false);
             }
             return;
         }
@@ -70,7 +71,8 @@ public class PlayerController : MonoBehaviour
         isDisabled = false;
         disableTimer = 0;
         VFXSlowDown.SetActive(false);
-        PlayerHitVFS.SetActive(false);
+        PlayerHitVFX.SetActive(false);
+        triggerVFX.SetActive(false);
         triggerObject.transform.localScale = originalScale;
         isScaleEnlarged = false;
         scaleTimer = 0;
@@ -107,6 +109,7 @@ public class PlayerController : MonoBehaviour
             if (other.GetComponent<FruitSettings>().touchTheGround) return;
         }
         //if (other.CompareTag("AiBot")) return;
+        triggerVFX.SetActive(false);
         if (other.CompareTag("Fruit"))
         {
             // 检查是否有 Outline 组件并且已启用
@@ -124,12 +127,13 @@ public class PlayerController : MonoBehaviour
                     StartCoroutine(HideAllFruits(10f));
                 }
             }
-            
+            triggerVFX.SetActive(true);
             ScoreController.Instance.Score(other.GetComponent<FruitSettings>().score);
             Destroy(other.gameObject);
         }
         else if (other.CompareTag("Stone"))
         {
+            triggerVFX.SetActive(true);
             Destroy(other.gameObject);
             DisableControl(3f);
         }
@@ -142,7 +146,7 @@ public class PlayerController : MonoBehaviour
             {
                 aiBot.GetStunned(3f);
             }
-            
+            triggerVFX.SetActive(true);
             Destroy(other.gameObject);
         }
     }
@@ -152,9 +156,9 @@ public class PlayerController : MonoBehaviour
     {
         isDisabled = true;
         disableTimer = duration;
-        if (PlayerHitVFS != null)
+        if (PlayerHitVFX != null)
         {
-            PlayerHitVFS.SetActive(true);
+            PlayerHitVFX.SetActive(true);
         }
     }
 

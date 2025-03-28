@@ -10,8 +10,9 @@ public class AIBotController : MonoBehaviour
     public float playerAvoidanceRadius = 3f; // 玩家避开半径
 
     
-    public GameObject AiBotHitVFS;
-    
+    public GameObject AiBotHitVFX;
+    public GameObject AiBotTriggerVFX;
+
     private GameObject currentTarget;
     private float targetUpdateTimer;
     private GameObject player;
@@ -36,9 +37,9 @@ public class AIBotController : MonoBehaviour
             if (stunnedTimer <= 0)
             {
                 isStunned = false;
-                if (AiBotHitVFS != null)
+                if (AiBotHitVFX != null)
                 {
-                    AiBotHitVFS.SetActive(false);
+                    AiBotHitVFX.SetActive(false);
                 }
             }
             return; // 被击晕时不执行其他逻辑
@@ -114,9 +115,9 @@ public class AIBotController : MonoBehaviour
     {
         isStunned = true;
         stunnedTimer = duration;
-        if (AiBotHitVFS != null)
+        if (AiBotHitVFX != null)
         {
-            AiBotHitVFS.SetActive(true);
+            AiBotHitVFX.SetActive(true);
         }
     }
     
@@ -127,14 +128,17 @@ public class AIBotController : MonoBehaviour
         
         if (isStunned) return; // 被击晕时不处理碰撞
 
+        AiBotTriggerVFX.SetActive(false);
+
         if (other.CompareTag("Fruit"))
         {
+
             FruitSettings fruitSettings = other.GetComponent<FruitSettings>();
             if (fruitSettings != null && !fruitSettings.touchTheGround)
             {
                 ScoreController.Instance.AiScore(other.GetComponent<FruitSettings>().score);
                 Destroy(other.gameObject);
-                
+                AiBotTriggerVFX.SetActive(true);
                 // 立即寻找新目标
                 currentTarget = null;
                 targetUpdateTimer = 0;
@@ -149,7 +153,7 @@ public class AIBotController : MonoBehaviour
             {
                 player.GetStunned(3f);
             }
-            
+            AiBotTriggerVFX.SetActive(true);
             Destroy(other.gameObject);
         }
     }
