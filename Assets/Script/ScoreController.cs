@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ScoreController : Singleton<ScoreController>
 {
@@ -15,7 +16,9 @@ public class ScoreController : Singleton<ScoreController>
     public TMP_Text timerText;
     public TMP_Text PTSText;
     public TMP_Text ATSText;
+    public Slider sliderTime;
     public float currentTime = 60f;
+    private float recordTime = 60f;
     public UIController uiC;
     
     [Header("分值匹配挑战")]
@@ -44,11 +47,13 @@ public class ScoreController : Singleton<ScoreController>
         if (uiC.GameUI.activeSelf)
         {
             KeepTime();
+            sliderTime.value = currentTime / recordTime;
         }
         if (currentTime<=0)
         {
             uiC.ActiveEndUI();
             currentTime = 60f;
+            recordTime = 60f;
         }
         if (playerTotalPoints < aiTotalPoints)
         {
@@ -188,6 +193,7 @@ public class ScoreController : Singleton<ScoreController>
         FGCon.isNormalPass = false;
         FGCon.isHardPass = false;
         currentTime = 90f;
+        recordTime = 90f;
         OverallStartGame();
         PTSText.gameObject.SetActive(true);
         ATSText.gameObject.SetActive(false);
@@ -197,6 +203,7 @@ public class ScoreController : Singleton<ScoreController>
         FGCon.isNormalPass = true;
         FGCon.isHardPass = false;
         currentTime = 150f;
+        recordTime = 150f;
         OverallStartGame();
         PTSText.gameObject.SetActive(true);
         ATSText.gameObject.SetActive(true);
@@ -206,6 +213,7 @@ public class ScoreController : Singleton<ScoreController>
         FGCon.isNormalPass = true;
         FGCon.isHardPass = true;
         currentTime = 210f;
+        recordTime = 210f;
         OverallStartGame();
         PTSText.gameObject.SetActive(true);
         ATSText.gameObject.SetActive(true);

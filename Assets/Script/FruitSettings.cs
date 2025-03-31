@@ -73,7 +73,6 @@ public class FruitSettings : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("´¥Åö");
         if (collision.gameObject.CompareTag("Ground"))
         {
             touchTheGround = true;
